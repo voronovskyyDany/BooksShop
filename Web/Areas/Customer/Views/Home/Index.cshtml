@@ -1,6 +1,9 @@
 ﻿@model List<Product>
 
-
+<div class="input-group mb-3">
+    <input type="text" class="form-control" placeholder="Input name of product" aria-describedby="button-search">
+    <button class="btn btn-outline-secondary" type="button" id="button-search">Search</button>
+</div>
 <div class="row pb-3">
     @foreach (var product in Model)
     {
