@@ -5,10 +5,12 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Models;
 using Models.ViewModels;
+using Stripe;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Security.Claims;
 using Utility;
+using Product = Models.Product;
 
 namespace Web.Areas.Customer.Controllers
 {
@@ -47,6 +49,8 @@ namespace Web.Areas.Customer.Controllers
                 _unitOfWork?.Category?.Get(c => c.Id == id);
 
             ViewBag.IsRecomended = false;
+            ViewBag.Min = 10;
+            ViewBag.Max = 1000;
 
             return View(viewModel);
         }
@@ -80,6 +84,8 @@ namespace Web.Areas.Customer.Controllers
                     _unitOfWork?.Category?.Get(c => c.Id == categoryId);
 
                 ViewBag.IsRecomended = false;
+                ViewBag.Min = 10;
+                ViewBag.Max = 1000;
 
                 return View("Category", viewModel);
             }
@@ -87,24 +93,37 @@ namespace Web.Areas.Customer.Controllers
 
         }
 
-        public IActionResult Filter(bool isRecomended, int categoryId)
+        public IActionResult Filter(bool isRecomended, int max, int min, int categoryId)
         {
             ProductsCategoryViewModel viewModel = new ProductsCategoryViewModel();
 
-            if(isRecomended)
-                viewModel.Products = this.FilterByRecomended(categoryId, isRecomended);
+            viewModel.Products = _unitOfWork.Product.GetAll(p => p.CategoryId == categoryId, includeProperties: "Category").ToList();
+
+            viewModel.Products = this.FilterByRecomended(categoryId, isRecomended, viewModel.Products);
+            viewModel.Products = this.FilterByPrice(categoryId, min, max, viewModel.Products);
 
             viewModel.Category =
                 _unitOfWork?.Category?.Get(c => c.Id == categoryId);
 
             ViewBag.IsRecomended = isRecomended;
+            ViewBag.Max = max;
+            ViewBag.Min = min;
 
-            return View("Category",viewModel);
+            return View("Category", viewModel);
         }
-        private List<Product> FilterByRecomended(int categoryId, bool isRecomended)
+        private List<Product> FilterByRecomended(int categoryId, bool isRecomended, List<Product> products)
         {
-            return _unitOfWork?.Product?.GetAll(p => p.CategoryId == categoryId && p.IsRecomented == isRecomended, includeProperties: "Category").ToList();
+            if (isRecomended)
+            {
+                return products.FindAll(p => p.IsRecomented == isRecomended);
+            }
+            return products;
         }
+        private List<Product> FilterByPrice(int categoryId, int min, int max, List<Product> products)
+        {
+            return products.FindAll(p => p.ListPrice > min && p.ListPrice < max);
+        }
+
 
         public IActionResult Details(int? productId)
         {
