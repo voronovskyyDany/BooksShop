@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Models;
+using Models.ViewModels;
 using System.Diagnostics;
 using System.Security.Claims;
 using Utility;
@@ -20,10 +21,25 @@ namespace Web.Areas.Customer.Controllers
             _unitOfWork = unitOfWork;
         }
 
-        public IActionResult Index()
+        public IActionResult Index(int? id)
         {
-            IEnumerable<Product>? products = _unitOfWork?.Product?.GetAll(includeProperties: "Category");
-            return View(products);
+            ProductsCategoriesViewModel viewModel = new ProductsCategoriesViewModel();
+
+            viewModel.Categories =
+                _unitOfWork?.Category?.GetAll().ToList();
+
+            if (id == null)
+            {
+                viewModel.Products =
+                    _unitOfWork?.Product?.GetAll(includeProperties: "Category").ToList();
+            }
+            else
+            {
+                viewModel.Products =
+                    _unitOfWork?.Product?.GetAll(p => p.CategoryId == id, includeProperties: "Category").ToList();
+            }
+
+            return View(viewModel);
         }
 
 

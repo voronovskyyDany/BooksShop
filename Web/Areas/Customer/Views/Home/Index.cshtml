@@ -1,67 +1,80 @@
-﻿@model List<Product>
+﻿@model ProductsCategoriesViewModel
 
 <div class="input-group mb-3">
     <input type="text" class="form-control" placeholder="Input name of product" aria-describedby="button-search">
     <button class="btn btn-outline-secondary" type="button" id="button-search">Search</button>
 </div>
 <div class="row pb-3">
-    @foreach (var product in Model)
-    {
-        <div class="col-lg-3 col-sm-6">
-            <div class="row p-2">
-                <div class="col-12 p-1">
-                    <div class="card border-0 p-3 shadow border-top border-5 rounded">
-                        <img src="@product.ImageUrl" class="card-img-top rou" alt="product">
-                        <div class="card-body pb-2">
-                            <div>
-                                <h5 class="card-title text-dark opacity-75 text-center">@product.Title</h5>
-                                <p class="card-title text-warning text-center">
-                                    by <span class="fw-bold">
-                                        @product.Author
-                                    </span>
-                                </p>
-                            </div>
-                            <div>
-                                <p class="text-dark text-opacity-75 text-center mb-0">
-                                    List Price: <span class="text-decoration-line-through text-danger">
-                                        @product.ListPrice?.ToString("c")
-                                    </span>
-                                </p>
-                            </div>
-                            <div>
-                                <p class="text-dark text-opacity-75 text-center">
-                                    As low as: <span class="text-success">
-                                        @product.Price100?.ToString("c")
-                                    </span>
-                                </p>
-                            </div>
-                            <div>
-                                <a asp-action="Details" asp-route-productId="@product.Id" class="btn btn-primary bg-gradient border-0 form-control">
-                                    Details
-                                </a>
+    <div class="col-2">
+        <div class="list-group">
+            <a class="list-group-item list-group-item-action category-select">All</a>
+            @foreach (var category in Model.Categories)
+            {
+                <a class="list-group-item list-group-item-action category-select" id="@category.Id">@category.Name</a>
+            }
+        </div>
+    </div>
+    <div class="col-10">
+        <div class="row pb-3">
+            @foreach (var product in Model.Products)
+            {
+                <div class="col-lg-3 col-sm-6">
+                    <div class="row p-2">
+                        <div class="col-12 p-1">
+                            <div class="card border-0 p-3 shadow border-top border-5 rounded">
+                                <img src="@product.ImageUrl" class="card-img-top rou" alt="product">
+                                <div class="card-body pb-2">
+                                    <div>
+                                        <h5 class="card-title text-dark opacity-75 text-center">@product.Title</h5>
+                                        <p class="card-title text-warning text-center">
+                                            by <span class="fw-bold">
+                                                @product.Author
+                                            </span>
+                                        </p>
+                                    </div>
+                                    <div>
+                                        <p class="text-dark text-opacity-75 text-center mb-0">
+                                            List Price: <span class="text-decoration-line-through text-danger">
+                                                @product.ListPrice?.ToString("c")
+                                            </span>
+                                        </p>
+                                    </div>
+                                    <div>
+                                        <p class="text-dark text-opacity-75 text-center">
+                                            As low as: <span class="text-success">
+                                                @product.Price100?.ToString("c")
+                                            </span>
+                                        </p>
+                                    </div>
+                                    <div>
+                                        <a asp-action="Details" asp-route-productId="@product.Id" class="btn btn-primary bg-gradient border-0 form-control">
+                                            Details
+                                        </a>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
-            </div>
+            }
         </div>
-    }
+    </div>
 </div>
 <div class="row pb-3">
     <h1>Recomendations for you</h1>
     <div id="carouselExample" class="carousel slide">
         <div class="carousel-inner">
-            @for (int i = 0; i < Math.Ceiling(Model.Count / 3.0); i++)
+            @for (int i = 0; i < Math.Ceiling(Model.Products.Count / 3.0); i++)
             {
-                @if (Model[i].IsRecomented == true)
+                @if (Model.Products[i].IsRecomented == true)
                 {
                     <div class="carousel-item @(i == 0 ? "active" : "")">
                         <div class="row">
-                            @for (int j = i * 3; j < Math.Min((i + 1) * 3, Model.Count); j++)
+                            @for (int j = i * 3; j < Math.Min((i + 1) * 3, Model.Products.Count); j++)
                             {
                                 <div class="col-md-4">
-                                    <a asp-area="Customer" asp-controller="Home" asp-action="Details" asp-route-productId="@Model[j].Id">
-                                        <img src="@Model[j].ImageUrl" class="d-block w-100" alt="...">
+                                    <a asp-action="Details" asp-route-productId="@Model.Products[j].Id">
+                                        <img src="@Model.Products[j].ImageUrl" class="d-block w-100" alt="...">
                                     </a>
                                 </div>
                             }
@@ -80,3 +93,7 @@
         </button>
     </div>
 </div>
+
+@section Scripts {
+    <script src="~/js/categorySelect.js"></script>
+}
