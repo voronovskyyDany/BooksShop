@@ -97,10 +97,12 @@ namespace Web.Areas.Customer.Controllers
         {
             ProductsCategoryViewModel viewModel = new ProductsCategoryViewModel();
 
-            viewModel.Products = _unitOfWork.Product.GetAll(p => p.CategoryId == categoryId, includeProperties: "Category").ToList();
+            List<Product> products = _unitOfWork.Product.GetAll(p => p.CategoryId == categoryId, includeProperties: "Category").ToList();
+            
+            this.FilterByRecomended(categoryId, isRecomended, products);
+            this.FilterByPrice(categoryId, min, max, products);
 
-            viewModel.Products = this.FilterByRecomended(categoryId, isRecomended, viewModel.Products);
-            viewModel.Products = this.FilterByPrice(categoryId, min, max, viewModel.Products);
+            viewModel.Products = products;
 
             viewModel.Category =
                 _unitOfWork?.Category?.Get(c => c.Id == categoryId);
@@ -111,17 +113,16 @@ namespace Web.Areas.Customer.Controllers
 
             return View("Category", viewModel);
         }
-        private List<Product> FilterByRecomended(int categoryId, bool isRecomended, List<Product> products)
+        private void FilterByRecomended(int categoryId, bool isRecomended, List<Product> products)
         {
             if (isRecomended)
             {
-                return products.FindAll(p => p.IsRecomented == isRecomended);
+                products.RemoveAll(p => p.IsRecomented != isRecomended);
             }
-            return products;
         }
-        private List<Product> FilterByPrice(int categoryId, int min, int max, List<Product> products)
+        private void FilterByPrice(int categoryId, int min, int max, List<Product> products)
         {
-            return products.FindAll(p => p.ListPrice > min && p.ListPrice < max);
+            products.RemoveAll(p => p.ListPrice < min && p.ListPrice > max);
         }
 
 
