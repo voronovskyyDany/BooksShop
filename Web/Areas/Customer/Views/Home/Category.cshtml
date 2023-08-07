@@ -6,13 +6,13 @@
 </div>
 <div class="row pb-3">
     <div class="col-3">
-        <h3>@Model.Category.Name</h3>
+        <h3>@Model?.Category?.Name</h3>
         <a asp-action="Index" class="btn btn-primary mb-1">Back</a>
-        <input type="hidden" value="@Model.Category.Id" id="categoryIdInput"/>
+        <input type="hidden" value="@Model?.Category?.Id" id="categoryIdInput"/>
         <div class="filter-group">
             <p>Filter</p>
             <div class="mb-3 form-check">
-                <input type="checkbox" class="form-check-input" id="isRecomendedFilter">
+                <input type="checkbox" class="form-check-input" id="isRecomendedFilter" @(ViewBag.IsRecomended ? "checked" : "")>
                 <label class="form-check-label" for="isRecomendedFilter">Recomended</label>
             </div>
         </div>
@@ -65,6 +65,7 @@
     </div>
 </div>
 @section Scripts {
-        <script src="~/js/categorySelect.js"></script>
-        <script src="~/js/productSearch.js"></script>
+    <script src="~/js/categorySelect.js"></script>
+    <script src="~/js/productSearch.js"></script>
+    <script src="~/js/productFilter.js"></script>
 }

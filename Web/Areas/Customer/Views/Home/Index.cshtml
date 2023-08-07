@@ -7,7 +7,6 @@
 <div class="row pb-3">
     <div class="col-3">
         <div class="list-group">
-            @*<a class="list-group-item list-group-item-action category-select">All</a>*@
             @foreach (var category in Model.Categories)
             {
                 <a class="list-group-item list-group-item-action category-select" asp-action="Category" asp-route-id="@category.Id">@category.Name</a>

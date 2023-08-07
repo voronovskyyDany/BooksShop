@@ -46,6 +46,8 @@ namespace Web.Areas.Customer.Controllers
             viewModel.Category = 
                 _unitOfWork?.Category?.Get(c => c.Id == id);
 
+            ViewBag.IsRecomended = false;
+
             return View(viewModel);
         }
 
@@ -77,10 +79,31 @@ namespace Web.Areas.Customer.Controllers
                 viewModel.Category =
                     _unitOfWork?.Category?.Get(c => c.Id == categoryId);
 
+                ViewBag.IsRecomended = false;
+
                 return View("Category", viewModel);
             }
 
 
+        }
+
+        public IActionResult Filter(bool isRecomended, int categoryId)
+        {
+            ProductsCategoryViewModel viewModel = new ProductsCategoryViewModel();
+
+            if(isRecomended)
+                viewModel.Products = this.FilterByRecomended(categoryId, isRecomended);
+
+            viewModel.Category =
+                _unitOfWork?.Category?.Get(c => c.Id == categoryId);
+
+            ViewBag.IsRecomended = isRecomended;
+
+            return View("Category",viewModel);
+        }
+        private List<Product> FilterByRecomended(int categoryId, bool isRecomended)
+        {
+            return _unitOfWork?.Product?.GetAll(p => p.CategoryId == categoryId && p.IsRecomented == isRecomended, includeProperties: "Category").ToList();
         }
 
         public IActionResult Details(int? productId)
@@ -96,7 +119,6 @@ namespace Web.Areas.Customer.Controllers
 
             return View(shoppingCart);
         }
-
 
         [HttpPost]
         [Authorize]
