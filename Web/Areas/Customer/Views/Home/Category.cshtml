@@ -5,15 +5,24 @@
     <button class="btn btn-outline-secondary" type="button" id="button-search">Search</button>
 </div>
 <div class="row pb-3">
-    <div class="col-2">
+    <div class="col-3">
         <h3>@Model.Category.Name</h3>
+        <a asp-action="Index" class="btn btn-primary mb-1">Back</a>
         <input type="hidden" value="@Model.Category.Id" id="categoryIdInput"/>
+        <div class="filter-group">
+            <p>Filter</p>
+            <div class="mb-3 form-check">
+                <input type="checkbox" class="form-check-input" id="isRecomendedFilter">
+                <label class="form-check-label" for="isRecomendedFilter">Recomended</label>
+            </div>
+        </div>
+        
     </div>
-    <div class="col-10">
+    <div class="col-9">
         <div class="row pb-3">
             @foreach (var product in Model.Products)
             {
-                <div class="col-lg-3 col-sm-6">
+                <div class="col-lg-4 col-md-6 col-sm-12">
                     <div class="row p-2">
                         <div class="col-12 p-1">
                             <div class="card border-0 p-3 shadow border-top border-5 rounded">

@@ -5,7 +5,7 @@
     <button class="btn btn-outline-secondary" type="button" id="button-search">Search</button>
 </div>
 <div class="row pb-3">
-    <div class="col-2">
+    <div class="col-3">
         <div class="list-group">
             @*<a class="list-group-item list-group-item-action category-select">All</a>*@
             @foreach (var category in Model.Categories)
@@ -14,11 +14,11 @@
             }
         </div>
     </div>
-    <div class="col-10">
+    <div class="col-9">
         <div class="row pb-3">
             @foreach (var product in Model.Products)
             {
-                <div class="col-lg-3 col-sm-6">
+                <div class="col-lg-4 col-md-6 col-sm-12">
                     <div class="row p-2">
                         <div class="col-12 p-1">
                             <div class="card border-0 p-3 shadow border-top border-5 rounded">
