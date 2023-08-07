@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore.Metadata;
 using Models;
 using Models.ViewModels;
 using System.Diagnostics;
@@ -42,6 +43,18 @@ namespace Web.Areas.Customer.Controllers
             return View(viewModel);
         }
 
+        public IActionResult Search(string text)
+        {
+            ProductsCategoriesViewModel viewModel = new ProductsCategoriesViewModel();
+
+            viewModel.Categories =
+                _unitOfWork?.Category?.GetAll().ToList();
+
+            viewModel.Products =
+                    _unitOfWork?.Product?.GetAll(p => p.Title.Contains(text), includeProperties: "Category").ToList();
+
+            return View("Index", viewModel);
+        }
 
         public IActionResult Details(int? productId)
         {
