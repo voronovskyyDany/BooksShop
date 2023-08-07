@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Models;
 using Models.ViewModels;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Security.Claims;
 using Utility;
@@ -22,28 +23,7 @@ namespace Web.Areas.Customer.Controllers
             _unitOfWork = unitOfWork;
         }
 
-        public IActionResult Index(int? id)
-        {
-            ProductsCategoriesViewModel viewModel = new ProductsCategoriesViewModel();
-
-            viewModel.Categories =
-                _unitOfWork?.Category?.GetAll().ToList();
-
-            if (id == null)
-            {
-                viewModel.Products =
-                    _unitOfWork?.Product?.GetAll(includeProperties: "Category").ToList();
-            }
-            else
-            {
-                viewModel.Products =
-                    _unitOfWork?.Product?.GetAll(p => p.CategoryId == id, includeProperties: "Category").ToList();
-            }
-
-            return View(viewModel);
-        }
-
-        public IActionResult Search(string text)
+        public IActionResult Index()
         {
             ProductsCategoriesViewModel viewModel = new ProductsCategoriesViewModel();
 
@@ -51,9 +31,56 @@ namespace Web.Areas.Customer.Controllers
                 _unitOfWork?.Category?.GetAll().ToList();
 
             viewModel.Products =
+                _unitOfWork?.Product?.GetAll(includeProperties: "Category").ToList();
+
+            return View(viewModel);
+        }
+
+        public IActionResult Category(int? id)
+        {
+            ProductsCategoryViewModel viewModel = new ProductsCategoryViewModel();
+
+            viewModel.Products =
+                _unitOfWork?.Product?.GetAll(p => p.CategoryId == id, includeProperties: "Category").ToList();
+
+            viewModel.Category = 
+                _unitOfWork?.Category?.Get(c => c.Id == id);
+
+            return View(viewModel);
+        }
+
+        public IActionResult Search(string text, int categoryId)
+        {
+            if (text == null)
+                text = "";
+
+            if(categoryId == 0)
+            {
+                ProductsCategoriesViewModel viewModel = new ProductsCategoriesViewModel();
+
+                viewModel.Products =
                     _unitOfWork?.Product?.GetAll(p => p.Title.Contains(text), includeProperties: "Category").ToList();
 
-            return View("Index", viewModel);
+                viewModel.Categories =
+                    _unitOfWork?.Category?.GetAll().ToList();
+
+                return View("Index", viewModel);
+            }
+
+            else
+            {
+                ProductsCategoryViewModel viewModel = new ProductsCategoryViewModel();
+
+                viewModel.Products =
+                       _unitOfWork?.Product?.GetAll(p => p.Title.Contains(text) && p.CategoryId == categoryId, includeProperties: "Category").ToList();
+
+                viewModel.Category =
+                    _unitOfWork?.Category?.Get(c => c.Id == categoryId);
+
+                return View("Category", viewModel);
+            }
+
+
         }
 
         public IActionResult Details(int? productId)
