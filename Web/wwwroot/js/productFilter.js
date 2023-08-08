@@ -6,6 +6,7 @@ $("#filterButton").click(function () {
     let isRecomended = $('#isRecomendedFilter').is(":checked");
     let max = $('#two').val();
     let min = $('#one').val();
+    let author = $("#authorFilter").val();
 
     $.ajax({
         url: SITE_PATH + 'customer/home/filter',
@@ -13,8 +14,10 @@ $("#filterButton").click(function () {
         data: {
             categoryId: categoryId,
             isRecomended: isRecomended,
+            author: author,
             max: max,
             min: min,
+            
         },
         dataType: 'html',
         success: function (data) {

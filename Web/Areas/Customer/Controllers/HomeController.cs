@@ -93,7 +93,7 @@ namespace Web.Areas.Customer.Controllers
 
         }
 
-        public IActionResult Filter(bool isRecomended, int max, int min, int categoryId)
+        public IActionResult Filter(bool isRecomended, int max, int min, string author, int categoryId)
         {
             ProductsCategoryViewModel viewModel = new ProductsCategoryViewModel();
 
@@ -101,6 +101,7 @@ namespace Web.Areas.Customer.Controllers
             
             this.FilterByRecomended(categoryId, isRecomended, products);
             this.FilterByPrice(categoryId, min, max, products);
+            this.FilterByAuthor(categoryId, author, products);
 
             viewModel.Products = products;
 
@@ -122,9 +123,14 @@ namespace Web.Areas.Customer.Controllers
         }
         private void FilterByPrice(int categoryId, int min, int max, List<Product> products)
         {
-            products.RemoveAll(p => p.ListPrice < min && p.ListPrice > max);
+            products.RemoveAll(p => p.Price < min || p.Price > max);
         }
-
+        private void FilterByAuthor(int cateogryId, string author, List<Product> products)
+        {
+            if(author == null)
+                author = string.Empty;
+            products.RemoveAll(p => !p.Author.Contains(author));
+        }
 
         public IActionResult Details(int? productId)
         {

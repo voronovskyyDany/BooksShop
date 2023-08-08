@@ -10,34 +10,36 @@
         <a asp-action="Index" class="btn btn-primary mb-1">Back</a>
         <input type="hidden" value="@Model?.Category?.Id" id="categoryIdInput"/>
         <div class="filter-group">
-            <p>Filter</p>
+            <h3>Filters</h3>
             <div class="mb-3 form-check">
                 <input type="checkbox" class="form-check-input" id="isRecomendedFilter" @(ViewBag.IsRecomended ? "checked" : "")>
                 <label class="form-check-label" for="isRecomendedFilter">Recomended</label>
             </div>
-            <div>
-                <div class="wrapper">
-                    <fieldset class="filter-price">
+            <div class="wrapper">
+                <fieldset class="filter-price">
 
-                        <div class="price-field">
-                            <input type="range" min="1" max="1000" value="@ViewBag.Min" id="lower">
-                            <input type="range" min="1" max="1000" value="@ViewBag.Max" id="upper">
-                        </div>
-                        <div class="price-wrap">
-                            <div class="price-container">
-                                <div class="price-wrap-1">
-                                    <label for="one">$</label>
-                                    <input id="one">
-                                </div>
-                                <div class="price-wrap_line">-</div>
-                                <div class="price-wrap-2">
-                                    <label for="two">$</label>
-                                    <input id="two">
-                                </div>
+                    <div class="price-field">
+                        <input type="range" min="1" max="1000" value="@ViewBag.Min" id="lower">
+                        <input type="range" min="1" max="1000" value="@ViewBag.Max" id="upper">
+                    </div>
+                    <div class="price-wrap">
+                        <div class="price-container">
+                            <div class="price-wrap-1">
+                                <label for="one">$</label>
+                                <input id="one">
+                            </div>
+                            <div class="price-wrap_line">-</div>
+                            <div class="price-wrap-2">
+                                <label for="two">$</label>
+                                <input id="two">
                             </div>
                         </div>
-                    </fieldset>
-                </div>
+                    </div>
+                </fieldset>
+            </div>
+            <div class="mb-3">
+                <label for="authorFilter" class="form-label">Author name</label>
+                <input type="text" class="form-control" id="authorFilter">
             </div>
             <button class="btn btn-primary" id="filterButton">Filter</button>
         </div>
