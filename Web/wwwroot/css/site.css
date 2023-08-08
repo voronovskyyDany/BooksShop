@@ -259,3 +259,7 @@ hr{
     box-shadow: 0 0 0 0.5px #242424;
     transition-duration: 0.3s;
 }
+
+.real-price{
+    color:red;
+}

@@ -6,9 +6,13 @@ using System;
 using System.ComponentModel.DataAnnotations;
 using System.Text.Encodings.Web;
 using System.Threading.Tasks;
+using DataAccess.Repository;
+using DataAccess.Repository.IRepository;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Models;
+using Models.ViewModels;
 
 namespace Web.Areas.Identity.Pages.Account.Manage
 {
@@ -16,13 +20,22 @@ namespace Web.Areas.Identity.Pages.Account.Manage
     {
         private readonly UserManager<IdentityUser> _userManager;
         private readonly SignInManager<IdentityUser> _signInManager;
+        private readonly IUnitOfWork _unitOfWork;
+        private readonly IWebHostEnvironment _webHostEnvironment;
+
+
 
         public IndexModel(
             UserManager<IdentityUser> userManager,
-            SignInManager<IdentityUser> signInManager)
+            SignInManager<IdentityUser> signInManager,
+            IUnitOfWork unitOfWork,
+            IWebHostEnvironment webHostEnvironment
+            )
         {
             _userManager = userManager;
             _signInManager = signInManager;
+            _unitOfWork = unitOfWork;
+            _webHostEnvironment = webHostEnvironment;
         }
 
         /// <summary>
@@ -58,6 +71,11 @@ namespace Web.Areas.Identity.Pages.Account.Manage
             [Phone]
             [Display(Name = "Phone number")]
             public string PhoneNumber { get; set; }
+            public string StreetAddress { get; set; }
+            public string City { get; set; }
+            public string State { get; set; }
+            public string PostalCode { get; set; }
+            public string ImageUrl { get; set; }
         }
 
         private async Task LoadAsync(IdentityUser user)
@@ -66,10 +84,16 @@ namespace Web.Areas.Identity.Pages.Account.Manage
             var phoneNumber = await _userManager.GetPhoneNumberAsync(user);
 
             Username = userName;
+            ApplicationUser appUser = _unitOfWork.ApplicationUser.Get(u => u.UserName == userName);
 
             Input = new InputModel
             {
-                PhoneNumber = phoneNumber
+                PhoneNumber = phoneNumber,
+                City = appUser.City,
+                State = appUser.State,
+                PostalCode = appUser.PostalCode,
+                StreetAddress = appUser.StreetAddress,
+                ImageUrl = appUser.ImageUrl,
             };
         }
 
@@ -85,7 +109,7 @@ namespace Web.Areas.Identity.Pages.Account.Manage
             return Page();
         }
 
-        public async Task<IActionResult> OnPostAsync()
+        public async Task<IActionResult> OnPostAsync(IFormFile? file)
         {
             var user = await _userManager.GetUserAsync(User);
             if (user == null)
@@ -109,6 +133,41 @@ namespace Web.Areas.Identity.Pages.Account.Manage
                     return RedirectToPage();
                 }
             }
+            
+            ApplicationUser appUser = _unitOfWork.ApplicationUser.Get(u => u.UserName == user.UserName);
+
+            string? wwwRootPath = _webHostEnvironment.WebRootPath;
+            if (file != null)
+            {
+                string fileName = Guid.NewGuid().ToString() + Path.GetExtension(file.FileName);
+                string imageFolderPath = Path.Combine(wwwRootPath, @"images\user");
+                string imagePath = Path.Combine(imageFolderPath, fileName);
+
+                if (!string.IsNullOrEmpty(appUser.ImageUrl))
+                {
+                    // delete the old image
+                    var oldImagePath =
+                        Path.Combine(wwwRootPath, appUser.ImageUrl.TrimStart('\\'));
+
+                    if (System.IO.File.Exists(oldImagePath))
+                    {
+                        System.IO.File.Delete(oldImagePath);
+                    }
+
+                }
+                using var fileStream = new FileStream(imagePath, FileMode.Create);
+                file.CopyTo(fileStream);
+
+                appUser.ImageUrl = @"\images\user\" + fileName;
+            }
+
+            appUser.City = Input.City;
+            appUser.State = Input.State;
+            appUser.PostalCode = Input.PostalCode;
+            appUser.StreetAddress = Input.StreetAddress;
+
+            _unitOfWork.ApplicationUser.Update(appUser);
+            _unitOfWork.Save();
 
             await _signInManager.RefreshSignInAsync(user);
             StatusMessage = "Your profile has been updated";

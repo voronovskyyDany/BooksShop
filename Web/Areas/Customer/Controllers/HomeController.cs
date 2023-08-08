@@ -183,8 +183,6 @@ namespace Web.Areas.Customer.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-
-
         public IActionResult Privacy()
         {
             return View();
