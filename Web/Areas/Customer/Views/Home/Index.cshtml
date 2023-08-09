@@ -17,44 +17,7 @@
         <div class="row pb-3">
             @foreach (var product in Model.Products)
             {
-                <div class="col-lg-4 col-md-6 col-sm-12">
-                    <div class="row p-2">
-                        <div class="col-12 p-1">
-                            <div class="card border-0 p-3 shadow border-top border-5 rounded">
-                                <img src="@product.ImageUrl" class="card-img-top rou" alt="product">
-                                <div class="card-body pb-2">
-                                    <div>
-                                        <h5 class="card-title text-dark opacity-75 text-center">@product.Title</h5>
-                                        <p class="card-title text-warning text-center">
-                                            by <span class="fw-bold">
-                                                @product.Author
-                                            </span>
-                                        </p>
-                                    </div>
-                                    <div>
-                                        <p class="text-dark text-opacity-75 text-center mb-0">
-                                            List Price: <span class="text-decoration-line-through real-price">
-                                                @product.ListPrice?.ToString("c")
-                                            </span>
-                                        </p>
-                                    </div>
-                                    <div>
-                                        <p class="text-dark text-opacity-75 text-center">
-                                            As low as: <span class="discount-price">
-                                                @product.Price100?.ToString("c")
-                                            </span>
-                                        </p>
-                                    </div>
-                                    <div>
-                                        <a asp-action="Details" asp-route-productId="@product.Id" class="btn btn-primary bg-gradient border-0 form-control">
-                                            Details
-                                        </a>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+                @await Component.InvokeAsync("Product", new {product = product})
             }
         </div>
     </div>

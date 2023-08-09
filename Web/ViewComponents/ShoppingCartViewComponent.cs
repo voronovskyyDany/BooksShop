@@ -32,7 +32,7 @@ namespace Web.ViewComponents
             }
             else
             {
-                HttpContext.Session.Clear();
+                //HttpContext.Session.Clear();
                 return View(0);
             }
         }

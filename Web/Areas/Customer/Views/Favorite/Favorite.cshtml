@@ -1,0 +1,12 @@
+﻿@model List<Product>
+
+<div class="row pb-3">
+    <div class="col-9">
+        <div class="row pb-3">
+            @foreach (var product in Model)
+            {
+                @await Component.InvokeAsync("Product", new {product = product})
+            }
+        </div>
+    </div>
+</div>

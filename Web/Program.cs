@@ -1,4 +1,4 @@
-using DataAccess.Data;
+﻿using DataAccess.Data;
 using DataAccess.Repository;
 using DataAccess.Repository.IRepository;
 using Microsoft.EntityFrameworkCore;
@@ -81,9 +81,12 @@ StripeConfiguration.ApiKey = builder.Configuration.GetSection("StripeSettings:Se
 
 app.UseRouting();
 
-app.UseAuthentication();
-app.UseAuthorization();
 app.UseSession();
+
+app.UseAuthentication();
+
+app.UseAuthorization();
+
 SeedDatabase();
 
 app.MapRazorPages();

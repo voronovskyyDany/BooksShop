@@ -26,5 +26,7 @@ namespace Utility
         public const string PaymentStatusRejected = "Rejected";
 
         public const string SessionCart = "SessionShoppingCart";
+        public const string SessionFavorite = "SessionFavorite";
+        public const string SessionHistory = "SessionHistory";
     }
 }
