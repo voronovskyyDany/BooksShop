@@ -27,13 +27,18 @@ namespace Web.Areas.Customer.Controllers
 
         public IActionResult Index()
         {
-            ProductsCategoriesViewModel viewModel = new ProductsCategoriesViewModel();
+            HomeViewModel viewModel = new HomeViewModel();
 
             viewModel.Categories =
                 _unitOfWork?.Category?.GetAll().ToList();
 
             viewModel.Products =
                 _unitOfWork?.Product?.GetAll(includeProperties: "Category").ToList();
+
+            viewModel.Recomended =
+                _unitOfWork?.Product?.GetAll(p => p.IsRecomented == true, includeProperties: "Category").ToList();
+
+            viewModel.History = this.getHisory();
 
             return View(viewModel);
         }
@@ -132,7 +137,7 @@ namespace Web.Areas.Customer.Controllers
             products.RemoveAll(p => !p.Author.Contains(author));
         }
 
-        public IActionResult Details(int? productId)
+        public IActionResult Details(int productId)
         {
             ShoppingCart shoppingCart = new()
             {
@@ -141,9 +146,40 @@ namespace Web.Areas.Customer.Controllers
                 Count = 1,
                 ProductId = productId
             };
-
+            this.addToHistory  (productId);
 
             return View(shoppingCart);
+        }
+
+        private void addToHistory(int productId)
+        {
+            List<int> historyIds = HttpContext.Session.Get<List<int>>(SD.SessionHistory);
+            if(historyIds == null)
+            {
+                historyIds = new();
+                historyIds.Add(productId);
+            }
+            else
+            {
+                if(!historyIds.Contains(productId)) 
+                {
+                    historyIds.Add(productId);
+                }
+            }
+            HttpContext.Session.Set(SD.SessionHistory, historyIds);
+        }
+        private List<Product> getHisory()
+        {
+            List <Product> hisory = new();
+            List<int> historyIds = HttpContext.Session.Get<List<int>>(SD.SessionHistory);
+            if(historyIds != null)
+            {
+                foreach (var id in historyIds)
+                {
+                    hisory.Add(_unitOfWork.Product.Get(p => p.Id == id, includeProperties: "Category"));
+                }
+            }
+            return hisory;
         }
 
         [HttpPost]

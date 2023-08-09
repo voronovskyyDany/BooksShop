@@ -1,4 +1,4 @@
-﻿@model ProductsCategoriesViewModel
+﻿@model HomeViewModel
 
 <div class="input-group mb-3">
     <input type="text" class="form-control" placeholder="Input name of product" aria-describedby="button-search" id="input-search">
@@ -26,35 +26,66 @@
     <h1>Recomendations for you</h1>
     <div id="carouselExample" class="carousel slide">
         <div class="carousel-inner">
-            @for (int i = 0; i < Math.Ceiling(Model.Products.Count / 3.0); i++)
+            @for (int i = 0; i < Math.Ceiling(Model.Recomended.Count / 3.0); i++)
             {
-                @if (Model.Products[i].IsRecomented == true)
+                <div class="carousel-item @(i == 0 ? "active" : "")">
+                    <div class="row">
+                        @for (int j = i * 3; j < Math.Min((i + 1) * 3, Model.Recomended.Count); j++)
+                         {
+                            <div class="col-md-4">
+                                <a asp-action="Details" asp-route-productId="@Model.Recomended[j].Id">
+                                    <img src="@Model.Recomended[j].ImageUrl" class="d-block w-100" alt="...">
+                                </a>
+                            </div>
+                        }
+                    </div>
+                </div>
+            }
+            <button class="carousel-control-prev" type="button" data-bs-target="#carouselExample" data-bs-slide="prev">
+                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Previous</span>
+            </button>
+            <button class="carousel-control-next" type="button" data-bs-target="#carouselExample" data-bs-slide="next">
+                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Next</span>
+            </button>
+        </div>
+    </div>
+</div>
+@if(Model.History.Count != 0)
+{
+    <div class="row pb-3">
+        <h1>History</h1>
+        <div id="carouselExample" class="carousel slide">
+            <div class="carousel-inner">
+                @for (int i = 0; i < Math.Ceiling(Model.History.Count / 3.0); i++)
                 {
                     <div class="carousel-item @(i == 0 ? "active" : "")">
                         <div class="row">
-                            @for (int j = i * 3; j < Math.Min((i + 1) * 3, Model.Products.Count); j++)
+                            @for (int j = i * 3; j < Math.Min((i + 1) * 3, Model.History.Count); j++)
                             {
                                 <div class="col-md-4">
-                                    <a asp-action="Details" asp-route-productId="@Model.Products[j].Id">
-                                        <img src="@Model.Products[j].ImageUrl" class="d-block w-100" alt="...">
+                                    <a asp-action="Details" asp-route-productId="@Model.History[j].Id">
+                                        <img src="@Model.History[j].ImageUrl" class="d-block w-100" alt="...">
                                     </a>
                                 </div>
                             }
                         </div>
                     </div>
                 }
-                
-            }
-        <button class="carousel-control-prev" type="button" data-bs-target="#carouselExample" data-bs-slide="prev">
-            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-            <span class="visually-hidden">Previous</span>
-        </button>
-        <button class="carousel-control-next" type="button" data-bs-target="#carouselExample" data-bs-slide="next">
-            <span class="carousel-control-next-icon" aria-hidden="true"></span>
-            <span class="visually-hidden">Next</span>
-        </button>
+                <button class="carousel-control-prev" type="button" data-bs-target="#carouselExample" data-bs-slide="prev">
+                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">Previous</span>
+                </button>
+                <button class="carousel-control-next" type="button" data-bs-target="#carouselExample" data-bs-slide="next">
+                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">Next</span>
+                </button>
+            </div>
+        </div>
     </div>
-</div>
+}
+
 
 @section Scripts {
         <script src="~/js/categorySelect.js"></script>

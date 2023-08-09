@@ -35,7 +35,6 @@ namespace Web.Areas.Customer.Controllers
         [HttpGet]
         public string Get()
         {
-            //HttpContext.Response.Cookies["ds"];
             List<int> favorites = HttpContext.Session.Get<List<int>>(SD.SessionFavorite);
             return JsonConvert.SerializeObject(favorites);
         }
