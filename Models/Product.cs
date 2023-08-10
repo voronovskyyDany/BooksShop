@@ -45,12 +45,14 @@ namespace Models
         public double? Price100 { get; set; }
         public string? ImageUrl { get; set; }
 
+        [Required]
+        public bool? IsRecomented { get; set; }
+
         public int CategoryId { get; set; }
 
         [ForeignKey("CategoryId")]
         public Category? Category { get; set; }
 
-        [Required]
-        public bool? IsRecomented { get; set; }
+        public List<Comment> Comments { get; set; }
     }
 }

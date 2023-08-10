@@ -150,7 +150,6 @@ namespace Web.Areas.Customer.Controllers
 
             return View(shoppingCart);
         }
-
         private void addToHistory(int productId)
         {
             List<int> historyIds = HttpContext.Session.Get<List<int>>(SD.SessionHistory);

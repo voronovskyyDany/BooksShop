@@ -18,11 +18,14 @@ namespace DataAccess.Data
         public DbSet<ApplicationUser>? ApplicationUsers { get; set; }
         public DbSet<OrderHeader>? OrderHeaders { get; set; }
         public DbSet<OrderDetail>? OrderDetails { get; set; }
+        public DbSet<Comment>? Comments { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
 
             base.OnModelCreating(modelBuilder);
+
+            modelBuilder.Entity<Comment>().HasKey(e => new { e.ProductId, e.ApplicationUserId });
 
             modelBuilder.Entity<Category>().HasData(
                 new Category { Id = 1, Name = "Action", DisplayOrder = 1 },
@@ -158,6 +161,6 @@ namespace DataAccess.Data
             );
 
         }
-
+        
     }
 }
