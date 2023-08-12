@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Models;
 
-namespace Web.Areas.Customer.Components
+namespace Web.ViewComponents
 {
     public class ProductViewComponent : ViewComponent
     {

@@ -15,6 +15,7 @@
                 <input type="checkbox" class="form-check-input" id="isRecomendedFilter" @(ViewBag.IsRecomended ? "checked" : "")>
                 <label class="form-check-label" for="isRecomendedFilter">Recomended</label>
             </div>
+            <hr />
             <div class="wrapper">
                 <fieldset class="filter-price">
 
@@ -37,10 +38,12 @@
                     </div>
                 </fieldset>
             </div>
+            <hr />
             <div class="mb-3">
                 <label for="authorFilter" class="form-label">Author name</label>
-                <input type="text" class="form-control" id="authorFilter">
+                <input type="text" class="form-control" id="authorFilter" value="@ViewBag.Author">
             </div>
+            <hr />
             <button class="btn btn-primary" id="filterButton">Filter</button>
         </div>
         

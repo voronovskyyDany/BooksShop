@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.CodeAnalysis;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Models;
 using Models.ViewModels;
@@ -116,6 +117,7 @@ namespace Web.Areas.Customer.Controllers
             ViewBag.IsRecomended = isRecomended;
             ViewBag.Max = max;
             ViewBag.Min = min;
+            ViewBag.Author = author;
 
             return View("Category", viewModel);
         }
@@ -147,6 +149,9 @@ namespace Web.Areas.Customer.Controllers
                 ProductId = productId
             };
             this.addToHistory  (productId);
+
+
+            ViewBag.Comments = _unitOfWork.Comment.GetAll(c => c.ProductId == productId, includeProperties: "Product,ApplicationUser").ToList(); 
 
             return View(shoppingCart);
         }
@@ -216,6 +221,23 @@ namespace Web.Areas.Customer.Controllers
             TempData["Success"] = "Cart Updated Successfully";
 
             return RedirectToAction(nameof(Index));
+        }
+
+        [HttpPost]
+        [Authorize]
+        public IActionResult SendComment (Comment comment)
+        {
+            var claimsIndentity = (ClaimsIdentity?)User.Identity;
+            var userId = claimsIndentity?.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+            comment.ApplicationUserId = userId;
+            comment.Created = DateTime.Now;
+
+            _unitOfWork.Comment.Add(comment);
+            _unitOfWork.Save();
+
+            comment.ApplicationUserId = userId;
+            return RedirectToAction(nameof(Details), routeValues: new { productId = comment.ProductId });
         }
 
         public IActionResult Privacy()

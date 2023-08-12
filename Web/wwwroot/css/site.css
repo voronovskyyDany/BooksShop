@@ -84,13 +84,13 @@ hr{
     .price-field input[type=range] {
         width: 100%;
         height: 7px;
-        border: 1px solid #000;
         outline: 0;
         box-sizing: border-box;
         border-radius: 5px;
         pointer-events: none;
         -webkit-appearance: none;
     }
+
 
         .price-field input[type=range]::-webkit-slider-thumb {
             -webkit-appearance: none;
@@ -133,6 +133,8 @@ hr{
             cursor: pointer;
             pointer-events: all;
             z-index: 100;
+            background: #053a5f;
+            height: 0.5rem;
         }
 
         .price-field input[type=range]::-moz-range-thumb {
@@ -151,6 +153,8 @@ hr{
             cursor: pointer;
             pointer-events: all;
             z-index: 100;
+            background: #053a5f;
+            height: 0.5rem;
         }
 
         .price-field input[type=range]::-ms-thumb {
@@ -169,6 +173,8 @@ hr{
             cursor: pointer;
             pointer-events: all;
             z-index: 100;
+            background: #053a5f;
+            height: 0.5rem;
         }
 
         /* Style track input range */
@@ -227,8 +233,8 @@ hr{
 
 .price-wrap #one,
 .price-wrap #two {
-    width: 30px;
-    text-align: right;
+    width: 40px;
+    text-align: center;
     margin: 0;
     padding: 0;
     margin-right: 2px;
@@ -262,4 +268,89 @@ hr{
 
 .real-price{
     color:red;
+}
+
+
+
+
+.rating {
+    display: inline-block;
+    position: relative;
+    height: 50px;
+    line-height: 50px;
+}
+
+    .rating label {
+        position: absolute;
+        top: 0;
+        left: 0;
+        height: 100%;
+        cursor: pointer;
+    }
+
+        .rating label:last-child {
+            position: static;
+        }
+
+        .rating label:nth-child(1) {
+            z-index: 5;
+        }
+
+        .rating label:nth-child(2) {
+            z-index: 4;
+        }
+
+        .rating label:nth-child(3) {
+            z-index: 3;
+        }
+
+        .rating label:nth-child(4) {
+            z-index: 2;
+        }
+
+        .rating label:nth-child(5) {
+            z-index: 1;
+        }
+
+        .rating label input {
+            position: absolute;
+            top: 0;
+            left: 0;
+            opacity: 0;
+        }
+
+        .rating label .icon {
+            float: left;
+            color: transparent;
+        }
+
+        .rating label:last-child .icon {
+            color: #000;
+        }
+
+    .rating:not(:hover) label input:checked ~ .icon,
+    .rating:hover label:hover input ~ .icon {
+        color: gold;
+    }
+
+    .rating label input:focus:not(:checked) ~ .icon:last-child {
+        color: #000;
+        text-shadow: 0 0 5px #09f;
+    }
+
+.logo {
+    border-radius: 50%;
+    border: 1px solid black;
+    width: 50px;
+    height: 50px;
+    background-color: white;
+}
+.gold{
+    color:gold;
+}
+.black{
+    color:black;
+}
+.star-font {
+    font-size: 30px;
 }

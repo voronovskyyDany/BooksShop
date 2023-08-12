@@ -20,6 +20,7 @@ namespace DataAccess.Repository.IRepository
 
         IOrderHeaderRepository? OrderHeader { get; }
         IOrderDetailRepository? OrderDetail { get; }
+        ICommentRepository? Comment { get; }
 
         void Save();
     }

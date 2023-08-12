@@ -14,7 +14,6 @@ $(function () {
                 $("#favoriteButton").click(addToFavorite);
                 return;
             }
-
             setNewButtonState(favorites, productId);
         },
     });
@@ -33,6 +32,9 @@ function addToFavorite() {
             let favorites = JSON.parse(data);
             setNewButtonState(favorites, productId);
         },
+        error: function (error) {
+            location.replace("/Identity/Account/Login");
+        }
     });
 }
 function removeFromFavorite() {

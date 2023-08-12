@@ -1,4 +1,5 @@
 ﻿using DataAccess.Repository.IRepository;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Models;
 using Newtonsoft.Json;
@@ -9,6 +10,7 @@ using static System.Runtime.InteropServices.JavaScript.JSType;
 namespace Web.Areas.Customer.Controllers
 {
     [Area("Customer")]
+    [Authorize]
     public class FavoriteController : Controller
     {
         private readonly IUnitOfWork _unitOfWork;

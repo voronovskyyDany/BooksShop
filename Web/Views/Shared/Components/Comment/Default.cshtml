@@ -1,0 +1,32 @@
+﻿@model Comment
+
+<div>
+    <div class="row">
+        <div class="col-8">
+            <div class="row">
+                <driv class="col-4 col-md-2">
+                    <img class="logo" src="@Model.ApplicationUser.ImageUrl"/>
+                </driv>
+                <div class="col-8">
+                    <p>@Model.ApplicationUser.Name</p>
+                    <p>@Model.Created.ToString()</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-4 star-font">
+            @for(int i = 0; i < 5; i++)
+            {
+                <label class="@(i == 0 ? "gold" : "black")">
+                    <span class="icon">★</span>
+                </label>
+            }
+            
+        </div>
+    </div>  
+    <div class="row">
+        <div class="col">
+            <span>@Model.Text</span>
+        </div>
+    </div>
+    <hr />
+</div>
