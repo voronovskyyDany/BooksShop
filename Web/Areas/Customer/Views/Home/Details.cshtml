@@ -82,13 +82,16 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="row">
-                            <div class="col-6 col-md-4 pb-1">
-                                <button type="button" class="btn btn-warning bg-gradient  w-100 py-2 fs-6 fw-semibold " id="favoriteButton">
-                                    Add to Favorite
-                                </button>
+                        @if(User.Identity.IsAuthenticated){
+                            <div class="row">
+                                <div class="col-6 col-md-4 pb-1">
+                                    <button type="button" class="btn btn-warning bg-gradient  w-100 py-2 fs-6 fw-semibold " id="favoriteButton">
+                                        Add to Favorite
+                                    </button>
+                                </div>
                             </div>
-                        </div>
+                        }
+                       
                         <div class="row">
                             <div class="col-12 col-md-6 pb-1">
                                 <button type="submit"
@@ -193,6 +196,9 @@
 </div>
 
 @section Scripts {
-    <script src="~/js/favorite.js"></script>
+    @if (User.Identity.IsAuthenticated)
+    {
+        <script src="~/js/favorite.js"></script>
+    }
     <script src="~/js/rating.js"></script>
 }

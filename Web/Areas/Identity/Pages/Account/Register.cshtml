@@ -19,7 +19,7 @@
     <div class="card-body p-4">
         <div class="row pt-3">
             <div class="col-md-12">
-                <form id="registerForm" class="row" asp-route-returnUrl="@Model.ReturnUrl" method="post">
+                <form id="registerForm" class="row" enctype="multipart/form-data" asp-route-returnUrl="@Model.ReturnUrl" method="post">
                     <h3 class="border-bottom pb-3 mb-4 text-secondary text-center">Create a new account</h3>
                     <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
                     <div class="form-floating mb-3 col-md-12">
@@ -66,6 +66,10 @@
                         <input asp-for="Input.PostalCode" class="form-control" placeholder="postal code" />
                         <label asp-for="Input.PostalCode" class="ms-2 text-muted">Postal Code</label>
                         <span asp-validation-for="Input.PostalCode" class="text-danger"></span>
+                    </div>
+                    <div class="row mb-3">
+                        <label asp-for="Input.ImageUrl" class="p-0"></label>
+                        <input type="file" name="file" asp-for="Input.ImageUrl" class="form-control">
                     </div>
                     @if (User.IsInRole(SD.Role_Admin))
                     {

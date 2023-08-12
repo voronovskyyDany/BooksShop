@@ -13,6 +13,7 @@ using System.Threading.Tasks;
 using DataAccess.Repository.IRepository;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
@@ -36,6 +37,7 @@ namespace Web.Areas.Identity.Pages.Account
         private readonly ILogger<RegisterModel> _logger;
         private readonly IEmailSender _emailSender;
         private readonly IUnitOfWork _unitOfWork;
+        private readonly IWebHostEnvironment _webHostEnvironment;
 
         public RegisterModel(
             UserManager<IdentityUser> userManager,
@@ -44,7 +46,9 @@ namespace Web.Areas.Identity.Pages.Account
             SignInManager<IdentityUser> signInManager,
             ILogger<RegisterModel> logger,
             IEmailSender emailSender,
-            IUnitOfWork unitOfWork
+            IUnitOfWork unitOfWork,
+            IWebHostEnvironment webHostEnvironment
+
             )
         {
             _userManager = userManager;
@@ -55,7 +59,7 @@ namespace Web.Areas.Identity.Pages.Account
             _logger = logger;
             _emailSender = emailSender;
             _unitOfWork = unitOfWork;
-
+            _webHostEnvironment = webHostEnvironment;
         }
 
         /// <summary>
@@ -120,12 +124,19 @@ namespace Web.Areas.Identity.Pages.Account
 
             [Required]
             public string Name { get; set; }
+            [Required]
             public string StreetAddress { get; set; }
+            [Required]
             public string City { get; set; }
+            [Required]
             public string State { get; set; }
+            [Required]
             public string PostalCode { get; set; }
+            [Required]
             public string PhoneNumber { get; set; }
+            [Required]
             public int CompanyId { get; set; }
+            public string ImageUrl { get; set; }
 
             [ValidateNever]
             public IEnumerable<SelectListItem> CompanyList { get; set; }
@@ -159,13 +170,21 @@ namespace Web.Areas.Identity.Pages.Account
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
         }
 
-        public async Task<IActionResult> OnPostAsync(string returnUrl = null)
+        public async Task<IActionResult> OnPostAsync(IFormFile file, string returnUrl = null)
         {
             returnUrl ??= Url.Content("~/");
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
             if (ModelState.IsValid)
             {
                 var user = CreateUser();
+
+                string wwwRootPath = _webHostEnvironment.WebRootPath;
+                string fileName = Guid.NewGuid().ToString() + Path.GetExtension(file.FileName);
+                string imageFolderPath = Path.Combine(wwwRootPath, @"images\user");
+                string imagePath = Path.Combine(imageFolderPath, fileName);
+
+                using var fileStream = new FileStream(imagePath, FileMode.Create);
+                file.CopyTo(fileStream);
 
                 await _userStore.SetUserNameAsync(user, Input.Email, CancellationToken.None);
                 await _emailStore.SetEmailAsync(user, Input.Email, CancellationToken.None);
@@ -175,8 +194,9 @@ namespace Web.Areas.Identity.Pages.Account
                 user.State = Input.State;
                 user.PostalCode = Input.PostalCode;
                 user.PhoneNumber = Input.PhoneNumber;
+                user.ImageUrl = @"\images\user\" + fileName;
 
-                if(Input.Role == SD.Role_Company)
+                if (Input.Role == SD.Role_Company)
                 {
                     user.CompanyId = Input.CompanyId;
                 }
