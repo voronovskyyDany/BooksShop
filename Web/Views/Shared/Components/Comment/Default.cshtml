@@ -1,6 +1,6 @@
 ﻿@model Comment
 
-<div>
+<div class="comment">
     <div class="row">
         <div class="col-8">
             <div class="row">
@@ -14,13 +14,12 @@
             </div>
         </div>
         <div class="col-4 star-font">
-            @for(int i = 0; i < 5; i++)
+            @for(int i = 1; i <= 5; i++)
             {
-                <label class="@(i == 0 ? "gold" : "black")">
+                <label class="@(i <= Model.Rate ? "gold" : "black")">
                     <span class="icon">★</span>
                 </label>
             }
-            
         </div>
     </div>  
     <div class="row">

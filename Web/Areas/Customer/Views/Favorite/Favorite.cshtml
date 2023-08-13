@@ -5,12 +5,11 @@
         <div class="row pb-3">
             @if(Model.Count == 0)
             {
-                <h2 class="text-center">You haven`t added anything yet</h2>
+                <h2>You haven`t added anything yet</h2>
             }
-
             @foreach (var product in Model)
             {
-                @await Component.InvokeAsync("Product", new {product = product})
+                @await Component.InvokeAsync("CompareProduct", new {product = product})
             }
         </div>
     </div>

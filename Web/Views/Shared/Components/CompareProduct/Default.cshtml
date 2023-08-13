@@ -1,7 +1,7 @@
 ﻿@model Product
 
 
-<div class="col-lg-5 col-md-8 col-sm-12">
+<div class="col-lg-6 col-md-8 col-sm-12">
     <div class="row p-2">
         <div class="col-12 p-1">
             <div class="card border-0 p-3 shadow border-top border-5 rounded">
@@ -30,9 +30,17 @@
                         </p>
                     </div>
                     <div>
-                        <a asp-action="Details" asp-route-productId="@Model.Id" class="btn btn-primary bg-gradient border-0 form-control">
+                        <a asp-area="Customer" asp-controller="Home" asp-action="Details" asp-route-productId="@Model.Id" class="btn btn-primary bg-gradient border-0 form-control">
                             Details
                         </a>
+                    </div>
+                    <div class="star-font">
+                        @for (int i = 1; i <= 5; i++)
+                        {
+                            <label class="@(i <= ViewBag.Rate ? "gold" : "black")">
+                                <span class="icon">★</span>
+                            </label>
+                        }
                     </div>
                 </div>
             </div>

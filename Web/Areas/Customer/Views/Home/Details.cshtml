@@ -1,6 +1,6 @@
 ﻿@model ShoppingCart
 
-<form method="post">
+<form method="post" action="AddToCard">
     <input hidden id="productIdInput" asp-for="@Model.ProductId">
     <div class="card shadow border-0 mt-4">
         <div class="card-header bg-primary bg-gradient text-light py-4">
@@ -109,7 +109,7 @@
 
 <form method="post" action="SendComment">
     <input hidden name="ProductId" asp-for="@Model.ProductId">
-    <input hidden name="Rating" id="ratingInput">
+    <input hidden name="Rate" id="ratingInput">
     <input hidden name="ApplicationUserId">
     <div class="card shadow border-0 mt-4">
         <div class="card-header bg-primary bg-gradient text-light py-4">
@@ -183,15 +183,12 @@
         </div>
     </div>
     <div class="card-body">
+        @foreach (var comment in ViewBag.Comments)
+        {
         <div class="row">
-            @foreach (var comment in ViewBag.Comments)
-            {
-                <div class="col">
-                    @await Component.InvokeAsync("Comment", new {comment = comment})
-                </div>
-            }
-           
+            @await Component.InvokeAsync("Comment", new {comment = comment})
         </div>
+        }
     </div>
 </div>
 

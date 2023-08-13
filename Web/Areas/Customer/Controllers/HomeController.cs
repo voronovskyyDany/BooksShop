@@ -148,7 +148,7 @@ namespace Web.Areas.Customer.Controllers
                 Count = 1,
                 ProductId = productId
             };
-            this.addToHistory  (productId);
+            this.addToHistory(productId);
 
 
             ViewBag.Comments = _unitOfWork.Comment.GetAll(c => c.ProductId == productId, includeProperties: "Product,ApplicationUser").ToList(); 
@@ -188,7 +188,7 @@ namespace Web.Areas.Customer.Controllers
 
         [HttpPost]
         [Authorize]
-        public IActionResult Details(ShoppingCart shoppingCart)
+        public IActionResult AddToCard(ShoppingCart shoppingCart)
         {
 
             var claimsIndentity = (ClaimsIdentity?)User.Identity;
@@ -227,14 +227,29 @@ namespace Web.Areas.Customer.Controllers
         [Authorize]
         public IActionResult SendComment (Comment comment)
         {
+            if (string.IsNullOrEmpty(comment.Text) || comment.Rate == 0)
+            {
+                return RedirectToAction(nameof(Details), new { productId = comment.ProductId });
+            }
+
             var claimsIndentity = (ClaimsIdentity?)User.Identity;
             var userId = claimsIndentity?.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 
-            comment.ApplicationUserId = userId;
-            comment.Created = DateTime.Now;
-
-            _unitOfWork.Comment.Add(comment);
+            Comment oldComment = _unitOfWork.Comment.Get(c => c.ApplicationUserId == userId && c.ProductId == comment.ProductId);
+            if (oldComment == null)
+            {
+                comment.ApplicationUserId = userId;
+                comment.Created = DateTime.Now;
+                _unitOfWork.Comment.Add(comment);
+            }
+            else
+            {
+                oldComment.Text = comment.Text;
+                oldComment.Rate = comment.Rate;
+                oldComment.Created = DateTime.Now;
+            }
             _unitOfWork.Save();
+
 
             comment.ApplicationUserId = userId;
             return RedirectToAction(nameof(Details), routeValues: new { productId = comment.ProductId });
