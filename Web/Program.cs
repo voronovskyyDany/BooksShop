@@ -7,6 +7,8 @@ using Microsoft.AspNetCore.Identity.UI.Services;
 using Utility;
 using Stripe;
 using DataAccess.DbInitializer;
+using SendGrid.Extensions.DependencyInjection;
+using RazorPage.AspNetIdentity.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -15,13 +17,14 @@ builder.Services.AddControllersWithViews();
 
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 
-builder.Services.AddScoped<IEmailSender, EmailSender>();
+builder.Services.AddScoped<IEmailSender, EmailSenderService>();
 
 builder.Services.AddDbContext<ApplicationDbContext>(
         options => options.UseSqlServer(
             builder.Configuration.GetConnectionString("DefaultConnection"))
 );
 
+builder.Services.Configure<SendGridSettings>(builder.Configuration.GetSection("SendGridSettings"));
 builder.Services.Configure<StripeSettings>(builder.Configuration.GetSection("StripeSettings"));
 
 builder.Services.AddIdentity<IdentityUser, IdentityRole>()
@@ -50,6 +53,10 @@ builder.Services.AddAuthentication()
         options.ClientSecret = "vYo8Q~zrdT1Ej7BlCn8YeaxyAkSNBXcaN4pdvaL4";
     });
 
+builder.Services.AddSendGrid(options => {
+    options.ApiKey = builder.Configuration.GetSection("SendGridSettings")
+    .GetValue<string>("ApiKey");
+});
 
 builder.Services.AddDistributedMemoryCache();
 builder.Services.AddSession(options =>
